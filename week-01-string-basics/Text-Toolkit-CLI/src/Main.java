@@ -1,93 +1,94 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Main {
-    static void check(String ten, Object thucTe, Object mongDoi) {
-        if (thucTe.equals(mongDoi)) {
-            System.out.println("PASS: " + ten);
-        } else {
-            System.out.println("FAIL: " + ten + " | mong đợi: " + mongDoi + " | thực tế: " + thucTe);
-        }
+    // hàm đếm số từ.
+    static int countWords(String text){
+        if (text.trim().isEmpty()) return 0;
+        return text.trim().split("\\s+").length;
     }
 
-    public static List<String> parse(String line) {
-        List<String> hop = new ArrayList<>();
-        StringBuilder coc = new StringBuilder();
-        for (int i = 0; i < line.length(); i++) {
-            char c = line.charAt(i);
-            if (c == ',') {
-                hop.add(coc.toString());
-                coc.setLength(0);
-            } else {
-                coc.append(c);
-            }
-        }
-        hop.add(coc.toString());
-        return hop;
+    // hàm đảo chuỗi.
+    static String reverse(String text){
+        StringBuilder sbd = new StringBuilder(text);
+        return sbd.reverse().toString();
     }
 
-    // Hàm đếm số từ trong chuỗi.
-    public static int countWords(String text){
-        String t = text.trim();
-        if (t.isEmpty()) return 0;
-        return t.split("\\s+").length;
-    }
-
-    // hàm đảo ngược chuỗi.
-    public static String reverseText(String text){
-        StringBuilder stb = new StringBuilder(text);
-        return stb.reverse().toString();
-    }
-
-    // Hàm kiểm tra chuỗi xuôi ngược đều giống nhau.
-    public static boolean palindrome(String text){
-        StringBuilder stb = new StringBuilder(text);
-        if (stb.reverse().toString().equals(text)){
+    // hàm palindrome.
+    static boolean palindrome(String text){
+        StringBuilder sbd = new StringBuilder(text);
+        if (sbd.reverse().toString().equalsIgnoreCase(text)){
             return true;
         }
         return false;
     }
 
-    // hàm sắp xếp ký tự.
-    public static String sortText(String text){
-        char[] arr = text.toCharArray();
-        Arrays.sort(arr);
-        return String.valueOf(arr);
+    // hàm sắp xếp chuỗi.
+    static String sortText(String text){
+        char[] c = text.toCharArray();
+        Arrays.sort(c);
+        return new String(c);
     }
 
-    // hàm kiểm tra phép đảo chữ vd listen = silent = true.
-    public static boolean anagram(String text1, String text2){
+    // hàm anagram.
+    static boolean anagram(String text1, String text2){
         if (text1.length() != text2.length()) return false;
-        else if (sortText(text1).equals(sortText(text2))) return true;
+        if (sortText(text1).equalsIgnoreCase(sortText(text2))){
+            return true;
+        }
         return false;
+    }
+
+
+    // hàm parse.
+    static List<String> parse(String text){
+        List<String> hop = new ArrayList<>();
+        StringBuilder coc = new StringBuilder();
+
+        for (int i = 0; i < text.length(); i++){
+            char c = text.charAt(i);
+
+            if (c == ','){
+                hop.add(coc.toString().trim());
+                coc.setLength(0);
+            }
+            else {
+                coc.append(c);
+            }
+        }
+        hop.add(coc.toString().trim());
+
+        return hop;
+    }
+
+    // hàm check hợp lệ.
+    static void check(String input, Object desire, Object result){
+        System.out.println((desire.equals(result)) ? "PASS: "+input : "FAIL: "+input+" mong muốn: "+desire+" - kết quả: "+result);
     }
 
     // hàm main.
     public static void main(String[] args){
-        // Cho chuỗi.
-        String s1 = "Order#2024@Shop! okok";
-        System.out.println("Ta có chuỗi: "+s1);
-        System.out.println("Số từ trong chuỗi là: "+countWords(s1));
-        System.out.println("Đảo ngược chuỗi: "+reverseText(s1));
+        String text1 = "Xin chào đây là năm 2026";
+        System.out.println("số từ :"+countWords(text1));
+        System.out.println("chuỗi sau khi đảo ngược: "+reverse(text1));
 
-        String s2 = "tất";
-        System.out.println("\nKiem tra palindrome của chuỗi s2: "+palindrome(s2));
+        String text2 = "tat";
+        String text3 = "tta";
+        String text4 = "cho";
+        System.out.println("Palindrome: "+palindrome(text2));
+        System.out.println("Palindrome: "+palindrome(text3));
+        System.out.println("Kiểm tra anagram: "+anagram(text2, text3));
+        System.out.println("Kiểm tra anagram: "+anagram(text4, text3));
 
-        // Kiểm tra anagram.
-        String s3 = "tinhToan";
-        String s4 = "tianTonh";
-        System.out.println("\nKiem tra anagram của hai chuỗi "+s3+" và chuỗi "+s4+": "+anagram(s3, s4));
-
-
+        // check kết quả.
+        System.out.println("\nKiểm tra tính hợp lệ.");
         check("đếm từ 'a b c'",        countWords("a b c"), 3);
         check("đếm từ nhiều khoảng trắng", countWords("  a   b  "), 2);
+        check("đếm từ chỉ chứa dấu space: ",           countWords("   "), 0);
         check("đếm từ rỗng",           countWords(""), 0);
-        check("đảo 'abc'",             reverseText("abc"), "cba");
-        check("đảo rỗng",              reverseText(""), "");
+        check("đảo 'abc'",             reverse("abc"), "cba");
+        check("đảo rỗng",              reverse(""), "");
         check("palindrome madam",      palindrome("madam"), true);
         check("palindrome abca",       palindrome("abca"), false);
         check("anagram listen/silent", anagram("listen", "silent"), true);
@@ -96,5 +97,7 @@ public class Main {
         check("parse a,b,c",           parse("a,b,c"), Arrays.asList("a", "b", "c"));
         check("parse a,b, (ô cuối trống)", parse("a,b,"), Arrays.asList("a", "b", ""));
         check("parse rỗng",            parse(""), Arrays.asList(""));
+
+
     }
 }
